@@ -285,7 +285,7 @@ class SentrySDKTests: XCTestCase {
         givenSdkWithHub()
 
         let scope = Scope()
-        SentrySDK.capture(error: fixture.error, scope: scope)
+        SentrySDK.capture(error: fixture.error, attachFullStacktrace: false, scope: scope)
 
         assertErrorCaptured(expectedScope: scope)
     }
@@ -293,7 +293,7 @@ class SentrySDKTests: XCTestCase {
     func testCaptureErrorWithScopeBlock_ScopePassedToHub() {
         givenSdkWithHub()
 
-        SentrySDK.capture(error: fixture.error, block: fixture.scopeBlock)
+        SentrySDK.capture(error: fixture.error, attachFullStacktrace: false, block: fixture.scopeBlock)
 
         assertErrorCaptured(expectedScope: fixture.scopeWithBlockApplied)
     }
@@ -301,7 +301,7 @@ class SentrySDKTests: XCTestCase {
     func testCaptureErrorWithScopeBlock_CreatesNewScope() {
         givenSdkWithHub()
 
-        SentrySDK.capture(error: fixture.error, block: fixture.scopeBlock)
+        SentrySDK.capture(error: fixture.error, attachFullStacktrace: false, block: fixture.scopeBlock)
 
         assertHubScopeNotChanged()
     }
@@ -318,7 +318,7 @@ class SentrySDKTests: XCTestCase {
         givenSdkWithHub()
 
         let scope = Scope()
-        SentrySDK.capture(exception: fixture.exception, scope: scope)
+        SentrySDK.capture(exception: fixture.exception, attachFullStacktrace: false, scope: scope)
 
         assertExceptionCaptured(expectedScope: scope)
     }
@@ -326,7 +326,7 @@ class SentrySDKTests: XCTestCase {
     func testCaptureExceptionWithScopeBlock_ScopePassedToHub() {
         givenSdkWithHub()
 
-        SentrySDK.capture(exception: fixture.exception, block: fixture.scopeBlock)
+        SentrySDK.capture(exception: fixture.exception, attachFullStacktrace: false, block: fixture.scopeBlock)
 
         assertExceptionCaptured(expectedScope: fixture.scopeWithBlockApplied)
     }
@@ -334,7 +334,7 @@ class SentrySDKTests: XCTestCase {
     func testCaptureExceptionWithScopeBlock_CreatesNewScope() {
         givenSdkWithHub()
 
-        SentrySDK.capture(exception: fixture.exception, block: fixture.scopeBlock)
+        SentrySDK.capture(exception: fixture.exception, attachFullStacktrace: false, block: fixture.scopeBlock)
 
         assertHubScopeNotChanged()
     }

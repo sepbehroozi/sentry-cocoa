@@ -28,10 +28,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) SentryFileManager *fileManager;
 
 - (SentryId *)captureError:(NSError *)error
+      attachFullStacktrace:(BOOL)attachFullStacktrace
                  withScope:(SentryScope *)scope
     incrementSessionErrors:(SentrySession * (^)(void))sessionBlock;
 
 - (SentryId *)captureException:(NSException *)exception
+          attachFullStacktrace:(BOOL)attachFullStacktrace
                      withScope:(SentryScope *)scope
         incrementSessionErrors:(SentrySession * (^)(void))sessionBlock;
 

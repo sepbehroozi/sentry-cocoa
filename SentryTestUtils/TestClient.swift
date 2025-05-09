@@ -65,9 +65,9 @@ public class TestClient: SentryClient {
         return SentryId()
     }
     
-    public var captureErrorWithScopeInvocations = Invocations<(error: Error, scope: Scope)>()
-    public override func capture(error: Error, scope: Scope) -> SentryId {
-        captureErrorWithScopeInvocations.record((error, scope))
+    public var captureErrorWithScopeInvocations = Invocations<(error: Error, attachFullStacktrace: Bool, scope: Scope)>()
+    public override func capture(error: any Error, attachFullStacktrace: Bool, scope: Scope) -> SentryId {
+        captureErrorWithScopeInvocations.record((error, attachFullStacktrace, scope))
         return SentryId()
     }
     
@@ -77,22 +77,22 @@ public class TestClient: SentryClient {
         return SentryId()
     }
     
-    public var captureExceptionWithScopeInvocations = Invocations<(exception: NSException, scope: Scope)>()
-    public override func capture(exception: NSException, scope: Scope) -> SentryId {
-        captureExceptionWithScopeInvocations.record((exception, scope))
+    public var captureExceptionWithScopeInvocations = Invocations<(exception: NSException, attachFullStacktrace: Bool, scope: Scope)>()
+    public override func capture(exception: NSException, attachFullStacktrace: Bool, scope: Scope) -> SentryId {
+        captureExceptionWithScopeInvocations.record((exception, attachFullStacktrace, scope))
         return SentryId()
     }
 
     public var callSessionBlockWithIncrementSessionErrors = true
-    public var captureErrorWithSessionInvocations = Invocations<(error: Error, session: SentrySession?, scope: Scope)>()
-    public override func captureError(_ error: Error, with scope: Scope, incrementSessionErrors sessionBlock: @escaping () -> SentrySession) -> SentryId {
-        captureErrorWithSessionInvocations.record((error, callSessionBlockWithIncrementSessionErrors ? sessionBlock() : nil, scope))
+    public var captureErrorWithSessionInvocations = Invocations<(error: Error, attachFullStacktrace: Bool, session: SentrySession?, scope: Scope)>()
+    public override func captureError(_ error: Error, attachFullStacktrace: Bool, with scope: Scope, incrementSessionErrors sessionBlock: @escaping () -> SentrySession) -> SentryId {
+        captureErrorWithSessionInvocations.record((error, attachFullStacktrace, callSessionBlockWithIncrementSessionErrors ? sessionBlock() : nil, scope))
         return SentryId()
     }
     
-    public var captureExceptionWithSessionInvocations = Invocations<(exception: NSException, session: SentrySession?, scope: Scope)>()
-    public override func capture(_ exception: NSException, with scope: Scope, incrementSessionErrors sessionBlock: @escaping () -> SentrySession) -> SentryId {
-        captureExceptionWithSessionInvocations.record((exception, callSessionBlockWithIncrementSessionErrors ? sessionBlock() : nil, scope))
+    public var captureExceptionWithSessionInvocations = Invocations<(exception: NSException, attachFullStacktrace: Bool, session: SentrySession?, scope: Scope)>()
+    public override func capture(_ exception: NSException, attachFullStacktrace: Bool, with scope: Scope, incrementSessionErrors sessionBlock: @escaping () -> SentrySession) -> SentryId {
+        captureExceptionWithSessionInvocations.record((exception, attachFullStacktrace, callSessionBlockWithIncrementSessionErrors ? sessionBlock() : nil, scope))
         return SentryId()
     }
     

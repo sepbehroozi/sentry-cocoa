@@ -499,21 +499,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (SentryId *)captureError:(NSError *)error
 {
-    return [self captureError:error withScope:self.scope];
+    return [self captureError:error attachFullStacktrace:NO];
 }
 
-- (SentryId *)captureError:(NSError *)error withScope:(SentryScope *)scope
+- (SentryId *)captureError:(NSError *)error attachFullStacktrace:(BOOL)attachFullStacktrace
+{
+    return [self captureError:error attachFullStacktrace:attachFullStacktrace withScope:self.scope];
+}
+
+- (SentryId *)captureError:(NSError *)error attachFullStacktrace:(BOOL)attachFullStacktrace withScope:(SentryScope *)scope
 {
     SentrySession *currentSession = _session;
     SentryClient *client = _client;
     if (client != nil) {
         if (currentSession != nil) {
             return [client captureError:error
+                   attachFullStacktrace:attachFullStacktrace
                               withScope:scope
                  incrementSessionErrors:^(void) { return [self incrementSessionErrors]; }];
         } else {
             _errorsBeforeSession++;
-            return [client captureError:error withScope:scope];
+            return [client captureError:error attachFullStacktrace:attachFullStacktrace withScope:scope];
         }
     }
     return SentryId.empty;
@@ -521,21 +527,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (SentryId *)captureException:(NSException *)exception
 {
-    return [self captureException:exception withScope:self.scope];
+    return [self captureException:exception attachFullStacktrace:NO];
 }
 
-- (SentryId *)captureException:(NSException *)exception withScope:(SentryScope *)scope
+- (SentryId *)captureException:(NSException *)exception attachFullStacktrace:(BOOL)attachFullStacktrace
+{
+    return [self captureException:exception attachFullStacktrace:attachFullStacktrace withScope:self.scope];
+}
+
+- (SentryId *)captureException:(NSException *)exception attachFullStacktrace:(BOOL)attachFullStacktrace withScope:(SentryScope *)scope
 {
     SentrySession *currentSession = _session;
     SentryClient *client = _client;
     if (client != nil) {
         if (currentSession != nil) {
             return [client captureException:exception
+                       attachFullStacktrace:attachFullStacktrace
                                   withScope:scope
                      incrementSessionErrors:^(void) { return [self incrementSessionErrors]; }];
         } else {
             _errorsBeforeSession++;
-            return [client captureException:exception withScope:scope];
+            return [client captureException:exception attachFullStacktrace:attachFullStacktrace withScope:scope];
         }
     }
     return SentryId.empty;

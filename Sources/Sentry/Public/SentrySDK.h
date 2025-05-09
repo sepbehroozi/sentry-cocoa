@@ -168,6 +168,14 @@ SENTRY_NO_INIT
 + (SentryId *)captureError:(NSError *)error NS_SWIFT_NAME(capture(error:));
 
 /**
+ * Captures an error event and sends it to Sentry.
+ * @param error The error to send to Sentry.
+ * @return The @c SentryId of the event or @c SentryId.empty if the event is not sent.
+ *
+ */
++ (SentryId *)captureError:(NSError *)error attachFullStacktrace:(BOOL)attachFullStacktrace NS_SWIFT_NAME(capture(error:attachFullStacktrace:));
+
+/**
  * Captures an error event and sends it to Sentry. Only the data in this scope object will be added
  * to the event. The global scope will be ignored.
  * @param error The error to send to Sentry.
@@ -176,7 +184,8 @@ SENTRY_NO_INIT
  *
  */
 + (SentryId *)captureError:(NSError *)error
-                 withScope:(SentryScope *)scope NS_SWIFT_NAME(capture(error:scope:));
+      attachFullStacktrace:(BOOL)attachFullStacktrace
+                 withScope:(SentryScope *)scope NS_SWIFT_NAME(capture(error:attachFullStacktrace:scope:));
 
 /**
  * Captures an error event and sends it to Sentry. Maintains the global scope but mutates scope data
@@ -187,7 +196,8 @@ SENTRY_NO_INIT
  *
  */
 + (SentryId *)captureError:(NSError *)error
-            withScopeBlock:(void (^)(SentryScope *scope))block NS_SWIFT_NAME(capture(error:block:));
+      attachFullStacktrace:(BOOL)attachFullStacktrace
+            withScopeBlock:(void (^)(SentryScope *scope))block NS_SWIFT_NAME(capture(error:attachFullStacktrace:block:));
 
 /**
  * Captures an exception event and sends it to Sentry.
@@ -198,6 +208,14 @@ SENTRY_NO_INIT
 + (SentryId *)captureException:(NSException *)exception NS_SWIFT_NAME(capture(exception:));
 
 /**
+ * Captures an exception event and sends it to Sentry.
+ * @param exception The exception to send to Sentry.
+ * @return The @c SentryId of the event or @c SentryId.empty if the event is not sent.
+ *
+ */
++ (SentryId *)captureException:(NSException *)exception attachFullStacktrace:(BOOL)attachFullStacktrace NS_SWIFT_NAME(capture(exception:attachFullStacktrace:));
+
+/**
  * Captures an exception event and sends it to Sentry. Only the data in this scope object will be
  * added to the event. The global scope will be ignored.
  * @param exception The exception to send to Sentry.
@@ -206,7 +224,8 @@ SENTRY_NO_INIT
  *
  */
 + (SentryId *)captureException:(NSException *)exception
-                     withScope:(SentryScope *)scope NS_SWIFT_NAME(capture(exception:scope:));
+          attachFullStacktrace:(BOOL)attachFullStacktrace
+                     withScope:(SentryScope *)scope NS_SWIFT_NAME(capture(exception:attachFullStacktrace:scope:));
 
 /**
  * Captures an exception event and sends it to Sentry. Maintains the global scope but mutates scope
@@ -217,8 +236,9 @@ SENTRY_NO_INIT
  *
  */
 + (SentryId *)captureException:(NSException *)exception
+          attachFullStacktrace:(BOOL)attachFullStacktrace
                 withScopeBlock:(void (^)(SentryScope *scope))block
-    NS_SWIFT_NAME(capture(exception:block:));
+    NS_SWIFT_NAME(capture(exception:attachFullStacktrace:block:));
 
 /**
  * Captures a message event and sends it to Sentry.

@@ -135,11 +135,19 @@ SENTRY_NO_INIT
 /**
  * Captures an error event and sends it to Sentry.
  * @param error The error to send to Sentry.
+ * @return The @c SentryId of the event or @c SentryId.empty if the event is not sent.
+ */
+- (SentryId *)captureError:(NSError *)error attachFullStacktrace:(BOOL)attachFullStacktrace NS_SWIFT_NAME(capture(error:attachFullStacktrace:));
+
+/**
+ * Captures an error event and sends it to Sentry.
+ * @param error The error to send to Sentry.
  * @param scope The scope containing event metadata.
  * @return The @c SentryId of the event or @c SentryId.empty if the event is not sent.
  */
 - (SentryId *)captureError:(NSError *)error
-                 withScope:(SentryScope *)scope NS_SWIFT_NAME(capture(error:scope:));
+      attachFullStacktrace:(BOOL)attachFullStacktrace
+                 withScope:(SentryScope *)scope NS_SWIFT_NAME(capture(error:attachFullStacktrace:scope:));
 
 /**
  * Captures an exception event and sends it to Sentry.
@@ -151,11 +159,19 @@ SENTRY_NO_INIT
 /**
  * Captures an exception event and sends it to Sentry.
  * @param exception The exception to send to Sentry.
+ * @return The @c SentryId of the event or @c SentryId.empty if the event is not sent.
+ */
+- (SentryId *)captureException:(NSException *)exception attachFullStacktrace:(BOOL)attachFullStacktrace NS_SWIFT_NAME(capture(exception:attachFullStacktrace:));
+
+/**
+ * Captures an exception event and sends it to Sentry.
+ * @param exception The exception to send to Sentry.
  * @param scope The scope containing event metadata.
  * @return The @c SentryId of the event or @c SentryId.empty if the event is not sent.
  */
 - (SentryId *)captureException:(NSException *)exception
-                     withScope:(SentryScope *)scope NS_SWIFT_NAME(capture(exception:scope:));
+          attachFullStacktrace:(BOOL)attachFullStacktrace
+                     withScope:(SentryScope *)scope NS_SWIFT_NAME(capture(exception:attachFullStacktrace:scope:));
 
 /**
  * Captures a message event and sends it to Sentry.
