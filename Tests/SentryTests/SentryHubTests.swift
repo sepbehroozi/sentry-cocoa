@@ -620,7 +620,7 @@ class SentryHubTests: XCTestCase {
     }
     
     func testCaptureErrorWithScope() {
-        fixture.getSut().capture(error: fixture.error, scope: fixture.scope).assertIsNotEmpty()
+        fixture.getSut().capture(error: fixture.error, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
         
         XCTAssertEqual(1, fixture.client.captureErrorWithScopeInvocations.count)
         if let errorArguments = fixture.client.captureErrorWithScopeInvocations.first {
@@ -632,8 +632,8 @@ class SentryHubTests: XCTestCase {
     func testCaptureErrorWithSessionWithScope() {
         let sut = fixture.getSut()
         sut.startSession()
-        sut.capture(error: fixture.error, scope: fixture.scope).assertIsNotEmpty()
-        
+        sut.capture(error: fixture.error, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
+
         XCTAssertEqual(1, fixture.client.captureErrorWithSessionInvocations.count)
         if let errorArguments = fixture.client.captureErrorWithSessionInvocations.first {
             XCTAssertEqual(fixture.error, errorArguments.error as NSError)
@@ -650,7 +650,7 @@ class SentryHubTests: XCTestCase {
     
     func testCaptureErrorBeforeSessionStart() {
         let sut = fixture.getSut()
-        sut.capture(error: fixture.error, scope: fixture.scope).assertIsNotEmpty()
+        sut.capture(error: fixture.error, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
         sut.startSession()
         
         XCTAssertEqual(fixture.client.captureErrorWithScopeInvocations.count, 1)
@@ -664,7 +664,7 @@ class SentryHubTests: XCTestCase {
     func testCaptureErrorBeforeSessionStart_DisabledAutoSessionTracking() {
         fixture.options.enableAutoSessionTracking = false
         let sut = fixture.getSut()
-        sut.capture(error: fixture.error, scope: fixture.scope).assertIsNotEmpty()
+        sut.capture(error: fixture.error, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
         sut.startSession()
         
         XCTAssertEqual(fixture.client.captureErrorWithScopeInvocations.count, 1)
@@ -678,8 +678,8 @@ class SentryHubTests: XCTestCase {
     func testCaptureError_SessionWithDefaultEnvironment() {
         let sut = fixture.getSut()
         sut.startSession()
-        sut.capture(error: fixture.error, scope: fixture.scope).assertIsNotEmpty()
-        
+        sut.capture(error: fixture.error, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
+
         XCTAssertEqual(fixture.client.captureSessionInvocations.count, 1)
         
         if let session = fixture.client.captureSessionInvocations.first {
@@ -691,8 +691,8 @@ class SentryHubTests: XCTestCase {
         fixture.options.environment = "test-env"
         let sut = fixture.getSut()
         sut.startSession()
-        sut.capture(error: fixture.error, scope: fixture.scope).assertIsNotEmpty()
-        
+        sut.capture(error: fixture.error, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
+
         XCTAssertEqual(fixture.client.captureSessionInvocations.count, 1)
         
         if let session = fixture.client.captureSessionInvocations.first {
@@ -704,8 +704,8 @@ class SentryHubTests: XCTestCase {
         let sut = fixture.getSut()
         sut.startSession()
         fixture.client.callSessionBlockWithIncrementSessionErrors = false
-        sut.capture(error: fixture.error, scope: fixture.scope).assertIsNotEmpty()
-        
+        sut.capture(error: fixture.error, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
+
         XCTAssertEqual(1, fixture.client.captureErrorWithSessionInvocations.count)
         if let errorArguments = fixture.client.captureErrorWithSessionInvocations.first {
             XCTAssertEqual(fixture.error, errorArguments.error as NSError)
@@ -728,8 +728,8 @@ class SentryHubTests: XCTestCase {
     }
     
     func testCaptureExceptionWithScope() {
-        fixture.getSut().capture(exception: fixture.exception, scope: fixture.scope).assertIsNotEmpty()
-        
+        fixture.getSut().capture(exception: fixture.exception, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
+
         XCTAssertEqual(1, fixture.client.captureExceptionWithScopeInvocations.count)
         if let errorArguments = fixture.client.captureExceptionWithScopeInvocations.first {
             XCTAssertEqual(fixture.exception, errorArguments.exception)
@@ -750,8 +750,8 @@ class SentryHubTests: XCTestCase {
     func testCaptureExceptionWithSessionWithScope() {
         let sut = fixture.getSut()
         sut.startSession()
-        sut.capture(exception: fixture.exception, scope: fixture.scope).assertIsNotEmpty()
-        
+        sut.capture(exception: fixture.exception, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
+
         XCTAssertEqual(1, fixture.client.captureExceptionWithSessionInvocations.count)
         if let exceptionArguments = fixture.client.captureExceptionWithSessionInvocations.first {
             XCTAssertEqual(fixture.exception, exceptionArguments.exception)
@@ -770,8 +770,8 @@ class SentryHubTests: XCTestCase {
         let sut = fixture.getSut()
         sut.startSession()
         fixture.client.callSessionBlockWithIncrementSessionErrors = false
-        sut.capture(exception: fixture.exception, scope: fixture.scope).assertIsNotEmpty()
-        
+        sut.capture(exception: fixture.exception, attachFullStacktrace: false, scope: fixture.scope).assertIsNotEmpty()
+
         XCTAssertEqual(1, fixture.client.captureExceptionWithSessionInvocations.count)
         if let exceptionArguments = fixture.client.captureExceptionWithSessionInvocations.first {
             XCTAssertEqual(fixture.exception, exceptionArguments.exception)
@@ -786,7 +786,7 @@ class SentryHubTests: XCTestCase {
     func testCaptureMultipleExceptionWithSessionInParallel() {
         let captureCount = 100
         captureConcurrentWithSession(count: captureCount) { sut in
-            sut.capture(exception: self.fixture.exception, scope: self.fixture.scope)
+            sut.capture(exception: self.fixture.exception, attachFullStacktrace: false, scope: self.fixture.scope)
         }
         
         let invocations = fixture.client.captureExceptionWithSessionInvocations.invocations
@@ -803,7 +803,7 @@ class SentryHubTests: XCTestCase {
     func testCaptureMultipleErrorsWithSessionInParallel() {
         let captureCount = 100
         captureConcurrentWithSession(count: captureCount) { sut in
-            sut.capture(error: self.fixture.error, scope: self.fixture.scope)
+            sut.capture(error: self.fixture.error, attachFullStacktrace: false, scope: self.fixture.scope)
         }
         
         let invocations = fixture.client.captureErrorWithSessionInvocations.invocations
@@ -1154,26 +1154,34 @@ class SentryHubTests: XCTestCase {
     
 #if os(iOS) || os(tvOS) || targetEnvironment(macCatalyst)
     func test_reportFullyDisplayed_enableTimeToFullDisplay_YES() {
+        // -- Arrange --
         let sut = fixture.getSut(fixture.options)
         
         let testTTDTracker = TestTimeToDisplayTracker(waitForFullDisplay: true)
         
-        Dynamic(SentryUIViewControllerPerformanceTracker.shared).currentTTDTracker = testTTDTracker
-        
+        let performanceTracker = Dynamic(SentryDependencyContainer.sharedInstance().uiViewControllerPerformanceTracker)
+        performanceTracker.currentTTDTracker = testTTDTracker
+
+        // -- Act --
         sut.reportFullyDisplayed()
         
+        // -- Assert --
         XCTAssertTrue(testTTDTracker.registerFullDisplayCalled)
     }
     
     func test_reportFullyDisplayed_enableTimeToFullDisplay_NO() {
+        // -- Arrange --
         let sut = fixture.getSut(fixture.options)
         
         let testTTDTracker = TestTimeToDisplayTracker(waitForFullDisplay: false)
         
-        Dynamic(SentryUIViewControllerPerformanceTracker.shared).currentTTDTracker = testTTDTracker
+        let performanceTracker = Dynamic(SentryDependencyContainer.sharedInstance().uiViewControllerPerformanceTracker)
+        performanceTracker.currentTTDTracker = testTTDTracker
         
+        // -- Act --
         sut.reportFullyDisplayed()
         
+        // -- Assert --
         XCTAssertFalse(testTTDTracker.registerFullDisplayCalled)
     }
 #endif

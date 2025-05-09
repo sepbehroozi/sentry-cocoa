@@ -435,7 +435,7 @@ class SentryClientTest: XCTestCase {
         }
 
         sut.add(processor)
-        sut.captureError(error, with: Scope()) {
+        sut.captureError(error, attachFullStacktrace: false, with: Scope()) {
             self.fixture.session
         }
 
@@ -457,7 +457,7 @@ class SentryClientTest: XCTestCase {
         }
         
         sut.add(processor)
-        sut.captureError(error, with: Scope()) {
+        sut.captureError(error, attachFullStacktrace: false, with: Scope()) {
             return SentrySession(releaseName: "", distinctId: "some-id")
         }
         
@@ -524,8 +524,8 @@ class SentryClientTest: XCTestCase {
     func testCaptureErrorWithoutAttachStacktrace() throws {
         let eventId = fixture.getSut(configureOptions: { options in
             options.attachStacktrace = false
-        }).capture(error: error, scope: fixture.scope)
-        
+        }).capture(error: error, attachFullStacktrace: false, scope: fixture.scope)
+
         eventId.assertIsNotEmpty()
         let actual = try lastSentEventWithAttachment()
         try assertValidErrorEvent(actual, error)
@@ -639,7 +639,7 @@ class SentryClientTest: XCTestCase {
     func testCaptureErrorWithComplexUserInfo() throws {
         let url = URL(string: "https://github.com/getsentry")!
         let error = NSError(domain: "domain", code: 0, userInfo: ["url": url])
-        let eventId = fixture.getSut().capture(error: error, scope: fixture.scope)
+        let eventId = fixture.getSut().capture(error: error, attachFullStacktrace: false, scope: fixture.scope)
 
         eventId.assertIsNotEmpty()
 
@@ -693,7 +693,7 @@ class SentryClientTest: XCTestCase {
     func testCaptureErrorWithSession() throws {
         let sessionBlockExpectation = expectation(description: "session block gets called")
         let scope = Scope()
-        let eventId = fixture.getSut().captureError(error, with: scope) {
+        let eventId = fixture.getSut().captureError(error, attachFullStacktrace: false, with: scope) {
             sessionBlockExpectation.fulfill()
             return self.fixture.session
         }
@@ -717,7 +717,7 @@ class SentryClientTest: XCTestCase {
 
         let eventId = fixture.getSut(configureOptions: { options in
             options.beforeSend = { _ in return nil }
-        }).captureError(error, with: Scope()) {
+        }).captureError(error, attachFullStacktrace: false, with: Scope()) {
             // This should NOT be called
             sessionBlockExpectation.fulfill()
             return self.fixture.session
@@ -963,9 +963,11 @@ class SentryClientTest: XCTestCase {
     func testCaptureErrorWithUserInfo() throws {
         let expectedValue = "val"
         let error = NSError(domain: "domain", code: 0, userInfo: ["key": expectedValue])
-        let eventId = fixture.getSut().capture(error: error,
-
- scope: fixture.scope)
+        let eventId = fixture.getSut().capture(
+            error: error,
+            attachFullStacktrace: false,
+            scope: fixture.scope
+        )
 
         eventId.assertIsNotEmpty()
         let actual = try lastSentEvent()
@@ -1038,15 +1040,15 @@ class SentryClientTest: XCTestCase {
     func testCaptureExceptionWithoutAttachStacktrace() throws {
         let eventId = fixture.getSut(configureOptions: { options in
             options.attachStacktrace = false
-        }).capture(exception: exception, scope: fixture.scope)
-        
+        }).capture(exception: exception, attachFullStacktrace: false, scope: fixture.scope)
+
         eventId.assertIsNotEmpty()
         let actual = try lastSentEventWithAttachment()
         assertValidExceptionEvent(actual)
     }
     
     func testCaptureExceptionWithSession() {
-        let eventId = fixture.getSut().capture(exception, with: fixture.scope) {
+        let eventId = fixture.getSut().capture(exception, attachFullStacktrace: false, with: fixture.scope) {
             self.fixture.session
         }
 
@@ -1065,7 +1067,7 @@ class SentryClientTest: XCTestCase {
 
         let eventId = fixture.getSut(configureOptions: { options in
             options.beforeSend = { _ in return nil }
-        }).capture(exception, with: fixture.scope) {
+        }).capture(exception, attachFullStacktrace: false, with: fixture.scope) {
             // This should NOT be called
             sessionBlockExpectation.fulfill()
             return self.fixture.session
@@ -1078,7 +1080,7 @@ class SentryClientTest: XCTestCase {
     func testCaptureExceptionWithUserInfo() throws {
         let expectedValue = "val"
         let exception = NSException(name: NSExceptionName("exception"), reason: "reason", userInfo: ["key": expectedValue])
-        let eventId = fixture.getSut().capture(exception: exception, scope: fixture.scope)
+        let eventId = fixture.getSut().capture(exception: exception, attachFullStacktrace: false, scope: fixture.scope)
 
         eventId.assertIsNotEmpty()
         let actual = try lastSentEventWithAttachment()
@@ -1107,7 +1109,7 @@ class SentryClientTest: XCTestCase {
         let session = SentrySession(releaseName: "", distinctId: "some-id")
         
         fixture.getSut().capture(session: session)
-        fixture.getSut().capture(exception, with: Scope()) {
+        fixture.getSut().capture(exception, attachFullStacktrace: false, with: Scope()) {
             session
         }
             .assertIsNotEmpty()
@@ -1294,7 +1296,7 @@ class SentryClientTest: XCTestCase {
         _ = SentryEnvelope(event: Event())
         let eventId = fixture.getSut(configureOptions: { options in
             options.dsn = nil
-        }).capture(self.exception, with: fixture.scope) {
+        }).capture(self.exception, attachFullStacktrace: false, with: fixture.scope) {
             self.fixture.session
         }
 
@@ -1307,7 +1309,7 @@ class SentryClientTest: XCTestCase {
         _ = SentryEnvelope(event: Event())
         let eventId = fixture.getSut(configureOptions: { options in
             options.dsn = nil
-        }).captureError(self.error, with: fixture.scope) {
+        }).captureError(self.error, attachFullStacktrace: false, with: fixture.scope) {
             self.fixture.session
         }
 

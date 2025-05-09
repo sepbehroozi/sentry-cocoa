@@ -355,37 +355,48 @@ static NSDate *_Nullable startTimestamp = nil;
 
 + (SentryId *)captureError:(NSError *)error
 {
-    return [SentrySDK captureError:error withScope:SentrySDK.currentHub.scope];
+    return [SentrySDK captureError:error attachFullStacktrace:NO];
 }
 
-+ (SentryId *)captureError:(NSError *)error withScopeBlock:(void (^)(SentryScope *_Nonnull))block
++ (SentryId *)captureError:(NSError *)error attachFullStacktrace:(BOOL)attachFullStacktrace
+{
+    return [SentrySDK captureError:error attachFullStacktrace:attachFullStacktrace withScope:SentrySDK.currentHub.scope];
+}
+
++ (SentryId *)captureError:(NSError *)error attachFullStacktrace:(BOOL)attachFullStacktrace withScopeBlock:(void (^)(SentryScope *_Nonnull))block
 {
     SentryScope *scope = [[SentryScope alloc] initWithScope:SentrySDK.currentHub.scope];
     block(scope);
-    return [SentrySDK captureError:error withScope:scope];
+    return [SentrySDK captureError:error attachFullStacktrace:attachFullStacktrace withScope:scope];
 }
 
-+ (SentryId *)captureError:(NSError *)error withScope:(SentryScope *)scope
++ (SentryId *)captureError:(NSError *)error attachFullStacktrace:(BOOL)attachFullStacktrace withScope:(SentryScope *)scope
 {
-    return [SentrySDK.currentHub captureError:error withScope:scope];
+    return [SentrySDK.currentHub captureError:error attachFullStacktrace:attachFullStacktrace withScope:scope];
 }
 
 + (SentryId *)captureException:(NSException *)exception
 {
-    return [SentrySDK captureException:exception withScope:SentrySDK.currentHub.scope];
+    return [SentrySDK captureException:exception attachFullStacktrace:NO];
+}
+
++ (SentryId *)captureException:(NSException *)exception attachFullStacktrace:(BOOL)attachFullStacktrace
+{
+    return [SentrySDK captureException:exception attachFullStacktrace:attachFullStacktrace withScope:SentrySDK.currentHub.scope];
 }
 
 + (SentryId *)captureException:(NSException *)exception
+          attachFullStacktrace:(BOOL)attachFullStacktrace
                 withScopeBlock:(void (^)(SentryScope *))block
 {
     SentryScope *scope = [[SentryScope alloc] initWithScope:SentrySDK.currentHub.scope];
     block(scope);
-    return [SentrySDK captureException:exception withScope:scope];
+    return [SentrySDK captureException:exception attachFullStacktrace:attachFullStacktrace withScope:scope];
 }
 
-+ (SentryId *)captureException:(NSException *)exception withScope:(SentryScope *)scope
++ (SentryId *)captureException:(NSException *)exception attachFullStacktrace:(BOOL)attachFullStacktrace withScope:(SentryScope *)scope
 {
-    return [SentrySDK.currentHub captureException:exception withScope:scope];
+    return [SentrySDK.currentHub captureException:exception attachFullStacktrace:attachFullStacktrace withScope:scope];
 }
 
 + (SentryId *)captureMessage:(NSString *)message
